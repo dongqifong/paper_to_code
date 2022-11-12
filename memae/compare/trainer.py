@@ -50,8 +50,8 @@ class Trainer:
             self.optim.zero_grad()
             x = x.to(self.device)
             y = y.to(self.device)
-            att, x_recon = self.model(x)
-            loss = self.loss_func(x,x_recon,att,alpha=self.alpha)
+            x_recon = self.model(x)
+            loss = self.loss_func(x,x_recon,0,alpha=self.alpha)
             loss.backward()
             self.optim.step()
             running_loss += loss.cpu().item()
@@ -66,8 +66,8 @@ class Trainer:
             for batch_idx, (x,y,_) in enumerate(self.dataloader_valid):
                 x = x.to(self.device)
                 y = y.to(self.device)
-                att, x_recon = self.model(x)
-                loss = self.loss_func(x,x_recon,att,alpha=self.alpha)
+                x_recon = self.model(x)
+                loss = self.loss_func(x,x_recon,0,alpha=self.alpha)
                 running_loss += loss.cpu().item()
             running_loss /= (batch_idx+1)
         return running_loss
@@ -101,3 +101,4 @@ class ModelDataset(Dataset):
         return len(self.x)
             
     
+
