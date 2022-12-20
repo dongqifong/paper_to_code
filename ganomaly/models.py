@@ -126,6 +126,15 @@ class GLoss(nn.Module):
         self.advloss = self.advloss_func(y_mid_z1,y_mid_z2)
         return self.w_enloss*self.enloss + self.w_conloss*self.conloss + self.w_advloss*self.advloss
 
+class DLoss(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.func = nn.CrossEntropyLoss()
+        return None
+
+    def forward(self,y_pred, y_true):
+        return self.func(y_pred, y_true)
+
 if __name__ == "__main__":
     in_channels = 1
     x_size = 6400
