@@ -53,7 +53,7 @@ class Trainer():
             self.g_loss_list.append(running_loss)
             
             if (epoch+1)%10==0 or epoch==0:
-                print(f"{epoch}/{epochs}, d_loss:{self.d_loss_list[-1]}, g_loss:{self.g_loss_list[-1]}")
+                print(f"{epoch+1}/{epochs}, d_loss:{self.d_loss_list[-1]}, g_loss:{self.g_loss_list[-1]}")
         pass
 
     def train_g_one_epoch(self):
@@ -69,7 +69,7 @@ class Trainer():
             loss.backward()
             self.optimizer_g.step()
             running_loss = running_loss + loss.detach().cpu().item()
-        return round(running_loss / batch_idx, 5)
+        return round(running_loss / (batch_idx+1), 5)
 
     def train_d_one_epoch(self):
         running_loss = 0.0
@@ -89,7 +89,7 @@ class Trainer():
             self.optimizer_d.step()
             running_loss = running_loss + loss.detach().cpu().item()
 
-        return round(running_loss / batch_idx, 5)
+        return round(running_loss / (batch_idx+1), 5)
 
 if __name__ == "__main__":
     data_source_path = Path("./dummy_data")
