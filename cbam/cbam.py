@@ -65,7 +65,7 @@ class CBAM(nn.Module):
     
 if __name__ == "__main__":
     x = torch.randn((10,32,1000))
-    m = CBAM(in_channels=32,ratio=1.1,kernel_size=1)
+    m = CBAM(in_channels=32,ratio=1.1,kernel_size=9)
     y = m(x)
     print(y.shape)
     print(m.Mc.shape)  # torch.Size([10, 32, 1])
