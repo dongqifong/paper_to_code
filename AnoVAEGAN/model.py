@@ -70,25 +70,25 @@ class SVAE(nn.Module):
         log_var = x[:,(x.shape[1]//2):]
         z = self.reparameterize(mu, log_var)
         x_recons = self.decoder(z)
-        return z, x_recons
+        return z, x_recons, mu, log_var
 
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return eps * std + mu
 
-x_size = 6400
-n_channels = 1
-x = torch.randn((1,n_channels,x_size))
-encoder = Encoder(x_size,n_channels)
-decoder = Decoder(x_size,n_channels)
-z = encoder(x)
-x_recons = decoder(z[:,:40])
-print(x_size)
-print(z.shape)
-print(x_recons.shape)
+# x_size = 6400
+# n_channels = 1
+# x = torch.randn((1,n_channels,x_size))
+# encoder = Encoder(x_size,n_channels)
+# decoder = Decoder(x_size,n_channels)
+# z = encoder(x)
+# x_recons = decoder(z[:,:40])
+# print(x_size)
+# print(z.shape)
+# print(x_recons.shape)
 
-model = SVAE(x_size,n_channels)
-z, x_recons = model(x)
-print(z.shape)
-print(x_recons.shape)
+# model = SVAE(x_size,n_channels)
+# z, x_recons = model(x)
+# print(z.shape)
+# print(x_recons.shape)
