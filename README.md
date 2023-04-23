@@ -1,6 +1,6 @@
 # paper_to_code
 
-## [實作paper中的模型，或依需求調整結構]
+## [實作paper中的模型(可能依需求調整結構)]
 
 1. 新增 [CBAM: Convolutional Block Attention Module]
 
@@ -10,9 +10,7 @@
 
 4. 新增[Deep Autoencoding Models for Unsupervised Anomaly Segmentation in Brain MR Images]，實作文獻中的sVAE模型，數據是隨產生的假數據。尚未建立AnoVAEGAN模型。
 
-
-
-## [Implement the model in the paper, or adjust the structure according to the requirements.]
+## [Implement the model in the paper (with possible structural adjustments according to requirements).]
 
 1. Add [CBAM: Convolutional Block Attention Module]
 
