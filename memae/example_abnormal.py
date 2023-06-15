@@ -13,7 +13,6 @@ import trainer
 import memae
 
 
-
 for i in range(3):
 
     mat_contents = sio.loadmat('./sample_data/cardio.mat')
@@ -41,16 +40,16 @@ for i in range(3):
     mem_dim = 50
     feature_dim = 8
     alpha = 0.001
-    epochs = 40000
+    epochs = 2000
     
     scaler = StandardScaler()
     scaler.fit(x_train)
-    
+
     model = memae.MemAE(x_size,mem_dim,feature_dim)
     model_trainer = trainer.Trainer(x_train=scaler.transform(x_train),x_valid=scaler.transform(X_abnormal),model=model,alpha=alpha,batch_size=128,show_progess=1000)
     model_trainer.train(epochs)
     model_trainer.training_loss
-    
+
     import matplotlib.pyplot as plt
     plt.figure()
     plt.plot(model_trainer.training_loss[1:],label="normal_train")

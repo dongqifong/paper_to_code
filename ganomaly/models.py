@@ -1,9 +1,18 @@
 import torch
 import torch.nn as nn
 
+def build_model(**kwargs):
+    in_channels = kwargs["in_channels"]
+    x_size = kwargs["x_size"]
+    kernel_size = kwargs["kernel_size"] # default:64
+    stride = kwargs["stride"] # default:8
+    p_dropout = kwargs["p_dropout"] # default:0.1
+    generator, discriminator = get_gen_dis(in_channels, x_size, kernel_size=kernel_size, stride=stride, p_dropout=p_dropout)
+    return(generator, discriminator)
+
 
 class Encoder(nn.Module):
-    def __init__(self, in_channels, x_size, kernel_size=64, stride=8):
+    def __init__(self, in_channels, x_size, kernel_size=64, stride=8, p_dropout=0.1):
         super().__init__()
         self.in_channels = in_channels
         self.x_size = x_size
@@ -14,11 +23,11 @@ class Encoder(nn.Module):
             nn.Conv1d(in_channels=self.in_channels, out_channels=self.in_channels *
                       32, kernel_size=self.kernel_size, stride=self.stride),
             nn.PReLU(),
-            nn.Dropout1d(p=0.1),
+            nn.Dropout1d(p=p_dropout),
             nn.Conv1d(in_channels=self.in_channels*32, out_channels=self.in_channels *
                       64, kernel_size=self.kernel_size, stride=self.stride),
             nn.PReLU(),
-            nn.Dropout1d(p=0.1),
+            nn.Dropout1d(p=p_dropout),
             nn.Conv1d(in_channels=self.in_channels*64, out_channels=self.in_channels *
                       128, kernel_size=self.kernel_size, stride=self.stride),
             nn.PReLU()
@@ -55,14 +64,14 @@ class Decoder(nn.Module):
 
 
 class Generator(nn.Module):
-    def __init__(self, in_channels, x_size, kernel_size, stride):
+    def __init__(self, in_channels, x_size, kernel_size, stride, p_dropout=0.1):
         super().__init__()
         self.encoder1 = Encoder(in_channels, x_size,
-                                kernel_size=kernel_size, stride=stride)
+                                kernel_size=kernel_size, stride=stride, p_dropout=p_dropout)
         self.decoder1 = Decoder(in_channels, x_size,
                                 kernel_size=kernel_size, stride=stride)
         self.encoder2 = Encoder(in_channels, x_size,
-                                kernel_size=kernel_size, stride=stride)
+                                kernel_size=kernel_size, stride=stride, p_dropout=p_dropout)
 
     def forward(self, x):
         z1 = self.encoder1(x)
@@ -88,9 +97,9 @@ class Discriminator(nn.Module):
         return y_mid, y
 
 
-def get_gen_dis(in_channels, x_size, kernel_size=64, stride=8):
+def get_gen_dis(in_channels, x_size, kernel_size=64, stride=8, p_dropout=0.1):
     generator = Generator(in_channels, x_size,
-                          kernel_size=kernel_size, stride=stride)
+                          kernel_size=kernel_size, stride=stride, p_dropout=p_dropout)
     x_dummy = torch.randn((1, in_channels, x_size))
     z1, _, _ = generator(x_dummy)
     discriminator = Discriminator(z1.shape)
@@ -151,6 +160,29 @@ class DLoss(nn.Module):
         return self.func(y_pred, y_true)
 
 
-def anomaly_score(z_1, z_2):
-    score = torch.mean(torch.abs(z_1 - z_2), dim=(1, 2))
-    return score
+# def anomaly_score(z_1, z_2):
+#     score = torch.mean(torch.abs(z_1 - z_2), dim=(1, 2))
+#     return score
+
+# if __name__=="__main__":
+#     n_sample = 10
+#     in_channels = 1
+#     x_size = 3200
+#     x = torch.randn((n_sample,in_channels,x_size))
+
+#     model_param = {}
+#     model_param["in_channels"] = in_channels
+#     model_param["x_size"] = x_size
+#     model_param["kernel_size"] = 32
+#     model_param["stride"] = 5
+#     model_param["p_dropout"] = 0.1
+
+#     g, d = build_model(**model_param)
+#     z1, x_recon, z2 = g(x)
+#     print("z1.shape: ",z1.shape)
+#     print("x_recon.shape: ",x_recon.shape)
+#     print("z2.shape: ",z2.shape)
+
+#     y_mid, y = d(z1)
+#     print("y_mid.shape: ", y_mid.shape)
+#     print("y.shape: ", y.shape)

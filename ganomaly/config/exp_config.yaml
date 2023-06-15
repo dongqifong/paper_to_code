@@ -1,0 +1,16 @@
+data_source_path: "data_train"
+
+data_source_path_valid: 
+
+model_params:
+  in_channels: 1
+  x_size: 3200
+  kernel_size: 32
+  stride: 5
+  p_dropout: 0.1
+  columns_idx: 1
+  batch_size: 32
+  shuffle: False
+  epochs: 1
+  lr_g: 0.0001
+  lr_d: 0.000001

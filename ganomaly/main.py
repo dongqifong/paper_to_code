@@ -1,32 +1,29 @@
-from models import get_gen_dis
+import pickle
+import yaml
+import numpy as np
 from trainer import Trainer
-import torch
 
 if __name__ == "__main__":
-    data_source_path = 'data/'
-    in_channels = 1
-    x_size = 10240
-    kernal_size = 32
-    stride = 8
-
     ## Training
-    generator, discriminator = get_gen_dis(
-        in_channels, x_size, kernal_size, stride)
-    columns_name = "a"
-    batch_size = 10
-    shuffle = False
-    trainer = Trainer(generator=generator, discriminator=discriminator, data_source_path=data_source_path,
-                      columns_name=columns_name, batch_size=batch_size, shuffle=shuffle)
-    trainer.train(1)
-    # save model
-    torch.save(trainer.generator, "saved_models/generator.pth")
-    torch.save(trainer.discriminator, "saved_models/discriminator.pth")
+    # from models import build_model
+    # with open('config/exp_config.yaml', 'rb') as f:
+    #     config = yaml.load(f)
 
-    ## Prediction
-    from predictor import Predictor
-    import numpy as np
-    kwargs = {"generator_path": "saved_models/generator.pth"}
-    predictor = Predictor(**kwargs)
-    x = np.random.random((10, in_channels, x_size))
-    score = predictor.predict(x)
-    print(score)
+    # models = build_model(**config["model_params"])
+    # data_source_path = config["data_source_path"]
+    # data_source_path_valid = None
+    # trainer = Trainer(data_source_path, models=models,data_source_path_valid=data_source_path_valid,**config["model_params"])
+    # trainer.train()
+
+    # exported_model = trainer.export_log_model()
+    # with open(f"artifacts/{exported_model[0][0]}.pkl","wb") as f:
+    #     pickle.dump(exported_model[0][1], f)
+
+
+    ## Predict
+    x = np.random.random((3,3200,1))
+    model_name = "generator_230615205007"
+    with open(f"artifacts/{model_name}.pkl","rb") as f:
+        model = pickle.load(f)
+    y = model.predict(x)
+    print(y)
